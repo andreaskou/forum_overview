@@ -1,0 +1,56 @@
+<!-- INCLUDE overall_header.html -->
+<!-- IF custome -->
+<!-- INCLUDECSS {ROOT_PATH}ext/andreask/forum_overview/adm/style/css/test.css -->
+<!-- INCLUDEJS {ROOT_PATH}ext/andreask/forum_overview/adm/style/js/scripts.js -->
+<!-- ENDIF -->
+<!-- IF S_ALLOW_CDN__ -->
+<!-- INCLUDECSS //maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css -->
+<!-- ENDIF -->
+<div class="container">
+	<a name="main_content"></a>
+	<div class="row">
+		<div class="col-1">
+			<div class="forum_overview_title_block">{{ lang('FORUM_OVERVIEW_TITLE') }}</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-1"><p>{{ lang('FORUM_OVERVIEW_EXPLAIN') }}</p></div>
+	</div>
+<!-- </div> -->
+<!-- <div class="container"> -->
+	<div class="row">
+		<div class="col-1">
+			<div id="forum_overview_errors_block"><span class="forum_overview_error_show" title="{{ lang('FORUM_OVERVIEW_ERROR') }}"></span></div>
+		</div>
+	</div>
+	<!-- BEGIN forum_list -->
+	<div class="row">
+		<div class="col-1">
+			<div class="forum_type">{{ lang('FORUM_TYPE')}} {{lang('COLON')}} {forum_list.FORUM_TYPE}</div>
+		</div>
+		<div class="col-2">
+			<div class="forum_id_tag">{{ lang('FORUM_ID')}} {{lang('COLON')}}</div><div class="forum_id">{forum_list.FORUM_ID}</div>
+		</div>
+		<!-- IF forum_list.IMG -->
+		<div class="col-3">
+			<div class="image"><span class="helper"></span><img src="{forum_list.IMG}"></div>
+		</div>
+		<!-- ENDIF -->
+		<div class="col-4">
+			<div class="title">{{ lang('TITLE')}} {{lang('COLON')}}</div> <div class="forum_name"><!-- IF forum_list.HAS_MORE --><a href="{forum_list.LINK}"><!-- ENDIF -->{forum_list.FORUM_NAME}<!-- IF forum_list.HAS_MORE --></a><!-- ENDIF --></div>
+		</div>
+		<!-- IF forum_list.PARENT_ID -->
+		<div class="col-5">
+			<div id="parent">Parent ID {{ lang('COLON')}} {forum_list.PARENT_ID}</div>
+		</div>
+		<!-- ENDIF -->
+	</div>
+	<!-- IF forum_list.PARENT_ID == 0 -->
+	<a href="#" id="toggle" data-ajax="true" ><i class="icon fa-info-circle fa-fw"> </i><span>More</span></a>
+	<div class="row extra-info" id="extra-info">info
+		<div class="col-1"> Show hide content</div>
+	</div>
+	<!-- ENDIF -->
+	<!-- END forum_list -->
+</div>
+<!-- INCLUDE overall_footer.html -->
