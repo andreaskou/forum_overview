@@ -65,8 +65,30 @@ class forum_overview_module
 
 			$board_url = generate_board_url().'/';
 
+			// Prepare breadcrumbs
+			$breadcrumbs = null;
+			if($request->variable('forum_id', 0) != 0)
+			{
+				// Get forum name and id for breadcrumbs
+				$crumbs = $this->crumbs($request->variable('forum_id', 0));
+
+				// Generate breadcrumbs
+				$breadcrumbs = $this->show_path($crumbs);
+				// var_dump($breadcrumbs);
+			}
+
+			$forum_id = $request->variable('forum_id', 0);
+			$forum_info = $this->get_title($forum_id);
+			$forum_link = $this->u_action . '&amp;forum_id=' . $forum_id;
+
 			$template->assign_var('FORUM_OVERVIEW_PAGE', true);
 			$template->assign_var('custome', true);
+			$template->assign_var('HOME', $this->u_action);
+			$template->assign_var('FORUM_ID', $forum_id);
+			$template->assign_var('FORUM_NAME', $forum_info['forum_name']);
+			$template->assign_var('FORUM_LINK', $forum_link);
+			$template->assign_var('BREADCRUMB', $breadcrumbs);
+
 
 			foreach ($forums as $forum)
 			{
@@ -91,9 +113,6 @@ class forum_overview_module
 					break;
 				}
 
-				// var_dump($this->has_more($forum['forum_id']));
-				// $forum['forum_id'] = $this->has_more($forum['forum_id']);
-
 				$template->assign_block_vars('forum_list', array(
 					'LINK'			=>	$this->u_action . '&amp;forum_id=' . $forum['forum_id'],
 					'HAS_MORE'		=>	$this->has_more($forum['forum_id']),
@@ -107,23 +126,16 @@ class forum_overview_module
 				$img_url = '';
 				$forum_type = '';
 			}
-
-			// echo "<pre>";
-			// print_r($forums[61]);
-			// echo "</pre>";
 		}
 	}
 
 	private function has_more($forum_id)
 	{
-		global $user, $language, $template, $request, $db, $config, $phpbb_container, $phpbb_root_path, $phpEx;
+		global $db;
 
 		$sql = 'SELECT COUNT(forum_id) AS forum_counter
 				FROM ' . FORUMS_TABLE .'
 				WHERE parent_id= '. $forum_id;
-
-		print_r($sql);
-		echo "</br>";
 
 		$result = $db->sql_query($sql);
 
@@ -131,6 +143,88 @@ class forum_overview_module
 		$db->sql_freeresult($result);
 
 		return($count);
+	}
+
+	private function crumbs($forum_id)
+	{
+
+		if ($forum_id == 0)
+		{
+			return false;
+		}
+
+		// See if there are any higher level forums...
+		$parent_ids[] = $this->get_parent($forum_id);
+		// var_dump($parent_ids);
+
+		// While we are not on the top forum keep searching for parent ids
+		while ($parent_ids[0] != 0)
+		{
+			array_unshift($parent_ids, $this->get_parent($parent_ids[0]));
+		}
+
+		// var_dump($parent_ids);
+		$crumb = [];
+
+		// unset($parent_ids[0]);
+
+		foreach ($parent_ids as $array => $crumbs)
+		{
+			// Get the title of forum...
+			$crumb[] = $this->get_title($crumbs);
+		}
+
+		return $crumb;
+	}
+
+	private function get_parent($forum_id)
+	{
+		global $db;
+
+		$sql = 'SELECT parent_id
+				FROM ' . FORUMS_TABLE . '
+				WHERE forum_id = ' . $forum_id;
+
+		$result = $db->sql_query($sql);
+		$var = $db->sql_fetchrow($result);
+		$parent_id = array_shift($var);
+		$db ->sql_freeresult($result);
+		return $parent_id;
+	}
+
+	private function get_title($forum_id)
+	{
+		global $db;
+
+		$sql = 'SELECT forum_id, forum_name
+				FROM ' . FORUMS_TABLE . '
+				WHERE forum_id= ' . $forum_id;
+
+		$result = $db->sql_query($sql);
+		$forum_info = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+
+		return $forum_info;
+	}
+
+	private function show_path($crumbs)
+	{
+		$breadcrumb = '';
+		$size = sizeof($crumbs);
+		// print_r($crumbs);
+		foreach ($crumbs as $key => $value)
+		{
+			if ($size != $key - 1){
+				$arrow = ' -> ';
+			}
+			else
+			{
+				$arrow = '';
+			}
+			// var_dump($value);
+			$breadcrumb .= '<a href="' . $this->u_action .'&amp;' . $value['forum_id'] . '">' . htmlspecialchars_decode($value['forum_name']) .'</a>' . $arrow;
+		}
+		return $breadcrumb;
 	}
 
 }

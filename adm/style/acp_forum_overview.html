@@ -25,7 +25,7 @@
 	</div>
 	<div class="row">
 		<div class="breadcrumb col-1">
-			<a href="#" id="breadcrumb"><i class="icon fa-home fa-lg"> </i><span>{breadcrumb}</span></a>
+			<a href="{HOME}" id="breadcrumb"><i class="icon fa-home fa-lg"> </i><span></span></a>{BREADCRUMB}<!-- IF FORUM_ID --><a href="{FORUM_LINK}">{FORUM_NAME}</a><!-- ENDIF -->
 		</div>
 	</div>
 	<!-- BEGIN forum_list -->
@@ -50,12 +50,10 @@
 		</div>
 		<!-- ENDIF -->
 	</div>
-	<!-- IF forum_list.PARENT_ID == 0 -->
-	<a href="#" id="toggle" data-ajax="true" ><i class="icon fa-info-circle fa-fw"> </i><span>More</span></a>
-	<div class="row extra-info" id="extra-info">info
+	<a href="#" class="toggle" id="{forum_list.FORUM_ID}" data-ajax="true" onclick="getId(this)"><i class="icon fa-info-circle fa-fw"> </i><span>More</span></a>
+	<div class="row extra-info" id="extra-info-{forum_list.FORUM_ID}">
 		<div class="col-1"> Show hide content</div>
 	</div>
-	<!-- ENDIF -->
 	<!-- END forum_list -->
 </div>
 <!-- INCLUDE overall_footer.html -->
