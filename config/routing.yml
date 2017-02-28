@@ -1,0 +1,3 @@
+andreask_forum_overview_get_info:
+    pattern: /forum_overview
+    defaults: {_controller: andreask.forum_overview.controller:get_info}

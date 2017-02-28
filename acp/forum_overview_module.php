@@ -21,10 +21,14 @@ class forum_overview_module
 {
 	public function main($id, $mode)
 	{
-		global $user, $language, $template, $request, $db, $config, $phpbb_container, $phpbb_root_path, $phpEx;
-		$config_text = $phpbb_container->get('config_text');
+		global $user, $template, $request, $db, $config, $phpbb_container, $phpbb_root_path, $phpEx;
+
 		$this->tpl_name = 'acp_forum_overview';
 		$this->page_title = $user->lang('ACP_FO_PAGE');
+
+		$config_text = $phpbb_container->get('config_text');
+		$helper = $phpbb_container->get('controller.helper');
+		$language = $phpbb_container->get('language');
 
 
 		if ($mode == 'forum_overview_page')
@@ -35,12 +39,8 @@ class forum_overview_module
 
 			add_form_key($form_key);
 
-			$template->assign_vars(array(
-				''
-			));
 
 			$sql_opt = '';
-
 			$parent_id = $request->variable('forum_id', 0);
 
 			if ($parent_id){
@@ -74,20 +74,24 @@ class forum_overview_module
 
 				// Generate breadcrumbs
 				$breadcrumbs = $this->show_path($crumbs);
-				// var_dump($breadcrumbs);
 			}
 
 			$forum_id = $request->variable('forum_id', 0);
 			$forum_info = $this->get_title($forum_id);
 			$forum_link = $this->u_action . '&amp;forum_id=' . $forum_id;
 
-			$template->assign_var('FORUM_OVERVIEW_PAGE', true);
-			$template->assign_var('custome', true);
-			$template->assign_var('HOME', $this->u_action);
-			$template->assign_var('FORUM_ID', $forum_id);
-			$template->assign_var('FORUM_NAME', $forum_info['forum_name']);
-			$template->assign_var('FORUM_LINK', $forum_link);
-			$template->assign_var('BREADCRUMB', $breadcrumbs);
+			$template->assign_vars(array(
+				'FORUM_OVERVIEW_PAGE'	=>	true,
+				'custome'				=>	true,
+				'HOME'					=>	$this->u_action,
+				'FORUM_ID'				=>	$forum_id,
+				'FORUM_NAME'			=>	$forum_info['forum_name'],
+				'FORUM_LINK'			=>	$forum_link,
+				'BREADCRUMB'			=>	$breadcrumbs,
+				'BOARD_URL'				=>	$board_url,
+				'S_ID'					=>	$user->data['session_id'],
+				'AJ_GET_MORE'			=>	htmlspecialchars($helper->route('andreask_forum_overview_get_info')),
+			));
 
 
 			foreach ($forums as $forum)
@@ -98,15 +102,15 @@ class forum_overview_module
 				switch ($forum['forum_type'])
 				{
 					case '0':
-					$forum_type = 'Category';
+					$forum_type = $language->lang('FORUM_TYPE_CATEGORY');
 					break;
 
 					case '1':
-						$forum_type = 'Forum';
+						$forum_type = $language->lang('FORUM_TYPE_FORUM');
 					break;
 
 					case '2':
-						$forum_type = 'Link';
+						$forum_type = $language->lang('FORUM_TYPE_LINK');
 					break;
 
 					default:
@@ -155,7 +159,6 @@ class forum_overview_module
 
 		// See if there are any higher level forums...
 		$parent_ids[] = $this->get_parent($forum_id);
-		// var_dump($parent_ids);
 
 		// While we are not on the top forum keep searching for parent ids
 		while ($parent_ids[0] != 0)
@@ -163,10 +166,7 @@ class forum_overview_module
 			array_unshift($parent_ids, $this->get_parent($parent_ids[0]));
 		}
 
-		// var_dump($parent_ids);
 		$crumb = [];
-
-		// unset($parent_ids[0]);
 
 		foreach ($parent_ids as $array => $crumbs)
 		{
@@ -201,28 +201,32 @@ class forum_overview_module
 				WHERE forum_id= ' . $forum_id;
 
 		$result = $db->sql_query($sql);
-		$forum_info = $db->sql_fetchrow($result);
+		$info = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
-		return $forum_info;
+		return $info;
 	}
 
 	private function show_path($crumbs)
 	{
+		global $phpbb_container;
+		$language = $phpbb_container->get('language');
+
 		$breadcrumb = '';
 		$size = sizeof($crumbs);
 		// print_r($crumbs);
 		foreach ($crumbs as $key => $value)
 		{
 			if ($size != $key - 1){
-				$arrow = ' -> ';
+				$arrow = ' <i class="icon fa-arrow-right fa-xsm"></i> ';
+				// $arrow = ' -> ';
 			}
 			else
 			{
 				$arrow = '';
 			}
 			// var_dump($value);
-			$breadcrumb .= '<a href="' . $this->u_action .'&amp;' . $value['forum_id'] . '">' . htmlspecialchars_decode($value['forum_name']) .'</a>' . $arrow;
+			$breadcrumb .= '<a href="' . $this->u_action .'&amp;forum_id=' . $value['forum_id'] . '">' . htmlspecialchars_decode($value['forum_name']) .'</a>' . $arrow;
 		}
 		return $breadcrumb;
 	}

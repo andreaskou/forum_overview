@@ -1,33 +1,29 @@
 var id ="";
+var data = "";
 
 function getId(elem) {
     id = $(elem).attr("id");
 }
 
-
-// $(function(){
-// 	$(".toggle").click(function(){
-// 		alert(id);
-// 	});
-// });
-
 $(function(){
     $(".toggle").click(function(){
         $( "#extra-info-" + id ).toggle("normal").one('click', function(event) {
             $.ajax({
-                // url: '/path/to/file',
-                url: window.location.href,
+                url: AJAX_GET_MORE,
                 type: 'POST',
-                // dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
-                data: {forum_id: id}
+                data: {forum_id: id},
+                success: function(data){
+                    // alert(data);
+                }
             })
-            .done(function() {
+            .done(function(data){
                 console.log("success");
+                console.log(data);
             })
-            .fail(function() {
+            .fail(function(data,jqxhr,textStatus,errorThrown) {
                 console.log("error");
             })
-            .always(function() {
+            .always(function(data) {
                 console.log("complete");
             });
 

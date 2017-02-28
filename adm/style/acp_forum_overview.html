@@ -2,9 +2,9 @@
 <!-- IF custome -->
 <!-- INCLUDECSS {ROOT_PATH}ext/andreask/forum_overview/adm/style/css/test.css -->
 <!-- INCLUDEJS {ROOT_PATH}ext/andreask/forum_overview/adm/style/js/scripts.js -->
-<!-- ENDIF -->
-<!-- IF S_ALLOW_CDN__ -->
-<!-- INCLUDECSS //maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css -->
+<script>
+	var AJAX_GET_MORE = "{AJ_GET_MORE}";
+</script>
 <!-- ENDIF -->
 <div class="container">
 	<a name="main_content"></a>
@@ -50,7 +50,7 @@
 		</div>
 		<!-- ENDIF -->
 	</div>
-	<a href="#" class="toggle" id="{forum_list.FORUM_ID}" data-ajax="true" onclick="getId(this)"><i class="icon fa-info-circle fa-fw"> </i><span>More</span></a>
+	<a href="#" class="toggle" id="{forum_list.FORUM_ID}" data-ajax="true" data-refresh="true" onclick="getId(this)"><i class="icon fa-info-circle fa-fw"> </i><span>More</span></a>
 	<div class="row extra-info" id="extra-info-{forum_list.FORUM_ID}">
 		<div class="col-1"> Show hide content</div>
 	</div>

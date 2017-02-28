@@ -1,0 +1,16 @@
+services:
+    andreask.forum_overview.controller:
+        class: andreask\forum_overview\controller\main_controller
+        arguments:
+            - '@dbal.conn'
+            - '@template'
+            - '@auth'
+            - '@request'
+            - '@controller.helper'
+    andreas.forum_overview.classes:
+        class: andreask\forum_overview\classes\get_info
+        arguments:
+            - '@dbal.conn'
+            - '@user'
+            - '@log'
+            - '@service_container'
