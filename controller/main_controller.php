@@ -26,6 +26,8 @@ class main_controller
 	private $request;
 	private $helper;
 	private $symfony;
+	private $forum_id;
+	public $forum_data;
 
 	function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\template\template $template,\phpbb\auth\auth $auth,\phpbb\request\request $request,\phpbb\controller\helper  $helper)
 	{
@@ -38,15 +40,29 @@ class main_controller
 
 	public function get_info()
 	{
-		$forum_id = $this->request->variable('forum_id', 'empty forum_id');
-
-		if($this->request->is_ajax())
+		if(!$this->request->is_ajax())
 		{
-			return new JsonResponse($forum_id);
+			return false;
 		}
 
-		echo $forum_id;
-		return new JsonResponse('Test!!!!!!!!!!!!');
+		if(!$this->request->is_set('forum_id'))
+		{
+			return false;
+		}
+
+		$this->forum_id = $this->request->variable('forum_id', 'empty forum_id');
+
+		$this->forum_info();
+
+		return new JsonResponse($this->forum_data);
 	}
 
+	private function forum_info()
+	{
+		$sql = 'SELECT * FROM ' . FORUMS_TABLE . ' WHERE forum_id = ' . $this->forum_id;
+
+ 		$result = $this->db->sql_query($sql);
+		$this->forum_data = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+	}
 }

@@ -53,7 +53,7 @@ class forum_overview_module
 
 			$sql = 'Select * from ' . FORUMS_TABLE .
 			$sql_opt .
-			' order by forum_id, parent_id';
+			' order by forum_id, left_id, right_id, parent_id';
 			// print_r($sql);
 			$result = $db->sql_query($sql);
 			while ($row = $db->sql_fetchrow($result))
@@ -61,8 +61,20 @@ class forum_overview_module
 				$forums[] = $row;
 			};
 
-			$db->sql_freeresult($result);
 
+			$test = [];
+			$sql = 'Select forum_rules, forum_rules_link from ' . FORUMS_TABLE .
+			' order by forum_id, left_id, right_id, parent_id';
+
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$test[] = $row;
+			};
+			$db->sql_freeresult($result);
+			echo "<pre>";
+			print_r($test);
+			echo "</pre>";
 			$board_url = generate_board_url().'/';
 
 			// Prepare breadcrumbs

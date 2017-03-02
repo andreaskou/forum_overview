@@ -18,7 +18,7 @@ $(function(){
             })
             .done(function(data){
                 console.log("success");
-                console.log(data);
+                console.log(data.toSource());
             })
             .fail(function(data,jqxhr,textStatus,errorThrown) {
                 console.log("error");

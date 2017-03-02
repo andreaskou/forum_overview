@@ -31,5 +31,9 @@ $lang = array_merge(
 	'TITLE'					=>	'Title',
 	'ASSIGNED_IMAGE'		=>	'Image',
 	'FORUM_TYPE'			=>	'Type',
+
+	'FORUM_TYPE_CATEGORY'	=>	'Category',
+	'FORUM_TYPE_FORUM'		=>	'Forum',
+	'FORUM_TYPE_LINK'		=>	'Link',
 	)
 );
