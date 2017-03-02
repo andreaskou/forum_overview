@@ -7,7 +7,10 @@ services:
             - '@auth'
             - '@request'
             - '@controller.helper'
-    andreas.forum_overview.classes:
+            - '@service_container'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+    andreas.forum_overview.classes.get_info:
         class: andreask\forum_overview\classes\get_info
         arguments:
             - '@dbal.conn'

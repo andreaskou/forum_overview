@@ -11,6 +11,7 @@ $(function(){
             $.ajax({
                 url: AJAX_GET_MORE,
                 type: 'POST',
+                dataType: "html",
                 data: {forum_id: id},
                 success: function(data){
                     // alert(data);

@@ -34,10 +34,13 @@ class forum_overview_module
 		if ($mode == 'forum_overview_page')
 		{
 			$this->tpl_name = 'acp_forum_overview';
-
 			$form_key = 'andreask_forum_overview';
-
 			add_form_key($form_key);
+
+			$board_url = generate_board_url().'/';
+			$forum_id = $request->variable('forum_id', 0);
+			$forum_info = $this->get_title($forum_id);
+			$forum_link = $this->u_action . '&amp;forum_id=' . $forum_id;
 
 
 			$sql_opt = '';
@@ -61,22 +64,6 @@ class forum_overview_module
 				$forums[] = $row;
 			};
 
-
-			$test = [];
-			$sql = 'Select forum_rules, forum_rules_link from ' . FORUMS_TABLE .
-			' order by forum_id, left_id, right_id, parent_id';
-
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$test[] = $row;
-			};
-			$db->sql_freeresult($result);
-			echo "<pre>";
-			print_r($test);
-			echo "</pre>";
-			$board_url = generate_board_url().'/';
-
 			// Prepare breadcrumbs
 			$breadcrumbs = null;
 			if($request->variable('forum_id', 0) != 0)
@@ -87,10 +74,6 @@ class forum_overview_module
 				// Generate breadcrumbs
 				$breadcrumbs = $this->show_path($crumbs);
 			}
-
-			$forum_id = $request->variable('forum_id', 0);
-			$forum_info = $this->get_title($forum_id);
-			$forum_link = $this->u_action . '&amp;forum_id=' . $forum_id;
 
 			$template->assign_vars(array(
 				'FORUM_OVERVIEW_PAGE'	=>	true,
